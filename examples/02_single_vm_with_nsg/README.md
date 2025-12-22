@@ -15,7 +15,7 @@ This deployment assumes that a Virtual Network already exists
 In this example, the VM is deployed into a public subnet and protected by a dedicated
 Network Security Group (NSG) that controls inbound access.
 
-<img src="02-single-vm-with-nsg-architecture.png" width="900"/>
+<img src="02_single_vm_with_nsg_architecture.png" width="900"/>
 
 This example creates:
 - A single Linux Virtual Machine
