@@ -55,7 +55,7 @@ terraform-az-fk-compute/
 │   ├── 01_single_vm/
 │   ├── 02_single_vm_with_nsg/        
 │   ├── 03_multiple_vms_with_lb/      
-│   ├── 04_vmss_autoscaling/          # planned
+│   ├── 04_vmss_autoscaling/         
 │   └── README.md
 ├── main.tf
 ├── inputs.tf

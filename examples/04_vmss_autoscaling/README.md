@@ -136,7 +136,11 @@ hostname
 Stop the tunnel (**Ctrl+C**) and re-run it with a different instance id:
 
 ```bash
-az network bastion tunnel   --name foggykitchen_bastion   --resource-group fk-rg   --target-resource-id $(az vmss show -g fk-rg -n fk-backend-vmss --query "id" -o tsv)/virtualMachines/5   --resource-port 22   --port 50022
+az network bastion tunnel \
+--name foggykitchen_bastion \
+--resource-group fk-rg \
+--target-resource-id $(az vmss show -g fk-rg -n fk-backend-vmss --query "id" -o tsv)/virtualMachines/5 \ --resource-port 22 \
+--port 50022
 ```
 
 ---

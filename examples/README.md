@@ -15,7 +15,7 @@ and multicloud courses (Azure Fundamentals, AKS, and advanced networking scenari
 | 01 | **Single Virtual Machine** | Minimal Linux VM, NIC attachment, compute basics |
 | 02 | **Single VM with NSG** | Network Security Groups and inbound/outbound control |
 | 03 | **Multiple VMs with Load Balancer** | Azure Load Balancer, backend pools, health probes |
-| 04 | **VM Scale Set with Autoscaling** | VMSS, autoscale rules, backend integration *(planned)* |
+| 04 | **VM Scale Set with Autoscaling** | VMSS, autoscale rules, backend integration |
 
 Each example builds on the **concepts** introduced in the previous one, but can be applied
 independently for learning and experimentation.
