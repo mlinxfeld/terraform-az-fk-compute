@@ -9,7 +9,7 @@ module "compute" {
   subnet_id        = module.vnet.subnet_ids["fk-subnet-public"]
 
   attach_nsg_to_nic = true
-  nsg_id = azurerm_network_security_group.vm_nsg.id
+  nsg_id            = azurerm_network_security_group.vm_nsg.id
 
   admin_username = var.admin_username
   ssh_public_key = tls_private_key.public_private_key_pair.public_key_openssh

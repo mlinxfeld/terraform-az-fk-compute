@@ -128,3 +128,9 @@ variable "nsg_id" {
   type        = string
   default     = null
 }
+
+variable "custom_data" {
+  description = "Cloud-Init injection"
+  type        = string
+  default     = ""
+}

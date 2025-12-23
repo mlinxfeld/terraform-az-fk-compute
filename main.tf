@@ -56,6 +56,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
     storage_account_type = "Standard_LRS"
   }
 
+  custom_data = var.custom_data
+
   tags = var.tags
 }
 
