@@ -116,3 +116,15 @@ variable "tags" {
   default     = {}
 }
 
+variable "attach_nsg_to_nic" {
+  description = "Whether to associate an NSG to the VM NIC (NIC-level NSG)."
+  type        = bool
+  default     = false
+}
+
+# Attach an NSG at NIC level (preferred for 'compute' module)
+variable "nsg_id" {
+  description = "Optional NSG ID to associate to the NIC (single VM). If null, no NIC-level NSG association is made."
+  type        = string
+  default     = null
+}

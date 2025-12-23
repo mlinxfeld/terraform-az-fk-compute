@@ -21,7 +21,7 @@ This example creates:
 - A single Linux Virtual Machine
 - A dedicated Network Interface (NIC)
 - A dedicated Network Security Group (NSG)
-- An NSG association (applied to the subnet or directly to the NIC — depending on the implementation)
+- An NSG association (applied directly to the NIC)
 - An OS disk attached to the VM
 - No Load Balancer
 - No autoscaling
@@ -67,8 +67,8 @@ tofu destroy
 
 This example demonstrates:
 
-- How to attach an **NSG to a subnet** (`azurerm_subnet_network_security_group_association`)
-- How to implement a minimal inbound policy for a VM subnet
+- How to attach an **NSG to a NIC** (`azurerm_network_interface_security_group_association`)
+- How to implement a minimal inbound policy for a VM instance
 - A clean foundation for the next steps:
   - Load Balancer frontends
   - VM Scale Sets (autoscaling)

@@ -34,8 +34,3 @@ resource "azurerm_network_security_group" "vm_nsg" {
   tags = var.tags
 }
 
-# Attach NSG to the public subnet used by the VM
-resource "azurerm_subnet_network_security_group_association" "public_subnet_assoc" {
-  subnet_id                 = module.vnet.subnet_ids["fk-subnet-public"]
-  network_security_group_id = azurerm_network_security_group.vm_nsg.id
-}

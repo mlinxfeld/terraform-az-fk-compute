@@ -21,6 +21,12 @@ resource "azurerm_network_interface" "vm_nic" {
   tags = var.tags
 }
 
+resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
+  count                     = (var.deployment_mode == "vm") && (var.attach_nsg_to_nic) ? 1 : 0
+  network_interface_id      = azurerm_network_interface.vm_nic[count.index].id
+  network_security_group_id = var.nsg_id
+}
+
 resource "azurerm_linux_virtual_machine" "vm" {
   count               = var.deployment_mode == "vm" ? 1 : 0
   name                = var.name

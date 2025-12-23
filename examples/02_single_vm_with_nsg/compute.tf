@@ -8,6 +8,9 @@ module "compute" {
   deployment_mode = "vm"
   subnet_id        = module.vnet.subnet_ids["fk-subnet-public"]
 
+  attach_nsg_to_nic = true
+  nsg_id = azurerm_network_security_group.vm_nsg.id
+
   admin_username = var.admin_username
   ssh_public_key = tls_private_key.public_private_key_pair.public_key_openssh
   vm_size        = var.vm_size
@@ -17,5 +20,5 @@ module "compute" {
 
   tags = var.tags
 
-  depends_on = [azurerm_subnet_network_security_group_association.public_subnet_assoc]
+#  depends_on = [azurerm_subnet_network_security_group_association.public_subnet_assoc]
 }
