@@ -81,7 +81,7 @@ After deployment, you should see:
 
 1. Load Balancer health probes reporting all backends as healthy
 
-<img src="03_multiple_vms_with_lb_architecture.png" width="900"/>
+<img src="03_multiple_vms_with_lb_rule_health_status.png" width="900"/>
 
 2. Backend VMs without public IPs
 
