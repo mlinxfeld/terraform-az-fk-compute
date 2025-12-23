@@ -55,6 +55,42 @@ After apply, you should see outputs including:
 
 ---
 
+## 🖼️ Azure Portal View
+
+Below you can see the deployed virtual machine and its networking configuration
+as displayed in the Azure Portal.
+
+<img src="02-single-vm-with-nsg-portal-overview.png" width="900"/>
+
+**Figure 1.** Single Azure Virtual Machine deployed into a custom VNet, with a **Network Security Group attached directly to the VM network interface (NIC)**.
+
+From the Azure Portal view you can observe:
+- The virtual machine `fk-public-vm` running in the custom VNet
+- A dedicated network interface `fk-public-vm-nic`
+- The VM deployed into the **public subnet**
+- A **Network Security Group** (`fk-public-vm-nsg`) **attached at the NIC level**
+- No Load Balancer
+- No autoscaling
+- No additional compute abstractions
+
+This confirms that traffic filtering is enforced **per virtual machine** rather than at the subnet level.
+
+---
+
+## 🔐 Why NIC-level NSG?
+
+Attaching the Network Security Group directly to the **network interface** allows:
+- Fine-grained, VM-specific security rules
+- Independent security policies for machines sharing the same subnet
+- A clean separation between **network topology (VNet / subnets) and compute security**
+
+This pattern is commonly used when:
+- A subnet hosts multiple workloads with different exposure levels
+- You want to tighten access without redesigning the entire subnet
+- You are preparing for future scenarios such as Load Balancers or VM Scale Sets
+
+---
+
 ## 🧹 Cleanup
 
 ```bash
