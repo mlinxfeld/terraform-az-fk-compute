@@ -53,8 +53,8 @@ Each of those concerns belongs in its **own dedicated module**.
 terraform-az-fk-compute/
 ├── examples/
 │   ├── 01_single_vm/
-│   ├── 02_single_vm_with_nsg/        # planned
-│   ├── 03_multiple_vms_with_lb/      # planned
+│   ├── 02_single_vm_with_nsg/        
+│   ├── 03_multiple_vms_with_lb/      
 │   ├── 04_vmss_autoscaling/          # planned
 │   └── README.md
 ├── main.tf
