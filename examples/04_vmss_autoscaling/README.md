@@ -68,6 +68,16 @@ Azure automatically manages backend membership as instances scale.
 
 ---
 
+## 📚 Related blog post
+
+For a step-by-step walkthrough of this VM Scale Set foundation, including architecture diagrams and Azure Portal verification, check out the companion article:
+
+➡️ **Azure VM Scale Sets Autoscaling with Terraform — Private compute at scale (2026 Edition)**  
+https://foggykitchen.com/2025/12/29/azure-vmss-autoscaling-terraform/
+
+---
+
+
 ## 🔐 SSH access via Azure Bastion (VMSS instances)
 
 This example deploys the backend as a **Virtual Machine Scale Set (VMSS)**.

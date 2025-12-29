@@ -102,7 +102,7 @@ Accessing the Load Balancer public IP should display the NGINX demo page.
 This example is also covered in a dedicated architectural blog post:
 
 **🔗 Private Azure Virtual Machines with Terraform — Load Balancer & Bastion (2026 Edition)**  
-https://foggykitchen.com/2025/12/29/azure-private-vm-terraform/
+https://foggykitchen.com/2025/12/23/azure-private-vm-terraform/
 
 The article explains the architecture behind this setup —  
 why private VMs + Load Balancer + Bastion are a common baseline  
