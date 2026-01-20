@@ -130,7 +130,7 @@ variable "nsg_id" {
 }
 
 variable "custom_data" {
-  description = "Cloud-Init injection"
+  description = "Base64-encoded custom_data (cloud-init). Null disables custom_data."
   type        = string
-  default     = ""
+  default     = null
 }

@@ -114,7 +114,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     }
   }
 
-  custom_data = var.custom_data
+  custom_data = (var.custom_data != null && trim(var.custom_data) != "") ? var.custom_data : null
 
   tags = var.tags
 }
