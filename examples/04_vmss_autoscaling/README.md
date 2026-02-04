@@ -14,7 +14,7 @@ The goal is to show how Azure-native scaling works **before** introducing AKS.
 This deployment includes:
 
 - A **Virtual Network** with multiple subnets
-- A **public Azure Load Balancer** with a frontend public IP
+- A **public Azure Load Balancer** (via `terraform-az-fk-loadbalancer`) with a frontend public IP
 - A **VM Scale Set (VMSS)** deployed into a private subnet
 - **NSG attached at subnet level**
 - **Azure Bastion** for secure SSH access
@@ -63,7 +63,7 @@ Refreshing the page may show a **different VMSS instance hostname**, confirming 
 
 <img src="04_vmss_autoscaling_azure_portal_lb_backend_to_vmss.png" width="900"/>
 
-The backend pool is attached **directly to the VM Scale Set**.
+The backend pool (from `terraform-az-fk-loadbalancer`) is attached **directly to the VM Scale Set**.
 Azure automatically manages backend membership as instances scale.
 
 ---
@@ -178,4 +178,3 @@ tofu destroy
 ---
 
 © 2025 FoggyKitchen.com — *Cloud. Code. Clarity.*
-

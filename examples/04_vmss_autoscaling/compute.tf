@@ -21,7 +21,7 @@ module "compute" {
   vm_size        = var.vm_size
 
   lb_attachment = {
-    backend_pool_id = azurerm_lb_backend_address_pool.foggykitchen_lb_backend.id
+    backend_pool_id = module.loadbalancer.backend_pool_id
   }
 
   tags = var.tags

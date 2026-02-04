@@ -31,7 +31,7 @@ The architecture consists of:
 - Three dedicated subnets:
   - `AzureBastionSubnet` (for Bastion)
   - `fk-subnet-private` (for backend VMs)
-- An **Azure Load Balancer** with a public frontend IP
+- An **Azure Load Balancer** (via `terraform-az-fk-loadbalancer`) with a public frontend IP
 - Multiple **Linux Virtual Machines** deployed in the private subnet
 - A **Network Security Group** attached at the subnet level
 - An **Azure Bastion Host** for secure SSH access
@@ -70,7 +70,7 @@ Private VM → NAT Gateway → Internet
 Each backend VM:
 - Is deployed using the `terraform-az-fk-compute` module
 - Uses cloud-init to install and configure **NGINX**
-- Is registered in the Load Balancer backend pool
+- Is registered in the Load Balancer backend pool (from `terraform-az-fk-loadbalancer`)
 - Serves a demo HTML page identifying the VM hostname
 
 ---
