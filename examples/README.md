@@ -3,7 +3,7 @@
 This directory contains all progressive examples used with the **terraform-az-fk-compute** module.
 The examples are designed as **incremental building blocks**, starting from a single Azure Virtual Machine and gradually evolving toward scalable, load-balanced compute architectures.
 
-These examples are part of the **FoggyKitchen.com** training ecosystem and are used across Azure
+These examples are part of the **[FoggyKitchen.com training ecosystem](https://foggykitchen.com/courses-2/)** and are used across Azure
 and multicloud courses (Azure Fundamentals, AKS, and advanced networking scenarios).
 
 ---
@@ -76,4 +76,3 @@ See [LICENSE](../LICENSE) for details.
 ---
 
 © 2025 FoggyKitchen.com — *Cloud. Code. Clarity.*
-
