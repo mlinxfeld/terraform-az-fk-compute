@@ -13,11 +13,11 @@ The goal is to show how Azure-native scaling works **before** introducing AKS.
 
 This deployment includes:
 
-- A **Virtual Network** with multiple subnets
+- A **Virtual Network** with multiple subnets (via `terraform-az-fk-vnet`)
 - A **public Azure Load Balancer** (via `terraform-az-fk-loadbalancer`) with a frontend public IP
-- A **VM Scale Set (VMSS)** deployed into a private subnet
-- **NSG attached at subnet level**
-- **Azure Bastion** for secure SSH access
+- A **VM Scale Set (VMSS)** deployed into a private subnet (via `terraform-az-fk-compute`)
+- **NSG attached at subnet level** (via `terraform-az-fk-nsg`)
+- **Azure Bastion** for secure SSH access (via `terraform-az-fk-bastion`)
 - **NAT Gateway** (via `terraform-az-fk-natgw`) for outbound internet access
 - **cloud-init**–based provisioning (NGINX)
 
@@ -105,7 +105,7 @@ Pick one instance (for example `1`) and open a tunnel to port **22**:
 
 ```bash
 az network bastion tunnel \
---name foggykitchen_bastion \
+--name foggykitchen-bastion \
 --resource-group fk-rg \
 --target-resource-id $(az vmss show -g fk-rg -n fk-backend-vmss --query "id" -o tsv)/virtualMachines/1 \    
 --resource-port 22 \
@@ -147,7 +147,7 @@ Stop the tunnel (**Ctrl+C**) and re-run it with a different instance id:
 
 ```bash
 az network bastion tunnel \
---name foggykitchen_bastion \
+--name fk-bastion \
 --resource-group fk-rg \
 --target-resource-id $(az vmss show -g fk-rg -n fk-backend-vmss --query "id" -o tsv)/virtualMachines/5 \ --resource-port 22 \
 --port 50022

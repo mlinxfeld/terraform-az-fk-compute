@@ -32,9 +32,9 @@ The architecture consists of:
   - `AzureBastionSubnet` (for Bastion)
   - `fk-subnet-private` (for backend VMs)
 - An **Azure Load Balancer** (via `terraform-az-fk-loadbalancer`) with a public frontend IP
-- Multiple **Linux Virtual Machines** deployed in the private subnet
-- A **Network Security Group** attached at the subnet level
-- An **Azure Bastion Host** for secure SSH access
+- Multiple **Linux Virtual Machines** (via `terraform-az-fk-compute`) deployed in the private subnet
+- A **Network Security Group** (via `terraform-az-fk-nsg`) attached at the subnet level
+- An **Azure Bastion Host** (via `terraform-az-fk-bastion`) for secure SSH access
 - A **NAT Gateway** (via `terraform-az-fk-natgw`) providing controlled outbound internet access
 
 ---
@@ -137,7 +137,7 @@ Run the following command from your local terminal:
 
 ```bash
 az network bastion tunnel \
-  --name foggykitchen_bastion \
+  --name fk-bastion \
   --resource-group fk-rg \
   --target-resource-id $(az vm show -g fk-rg -n fk-backend-vm1 --query id -o tsv) \
   --resource-port 22 \
