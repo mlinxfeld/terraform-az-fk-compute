@@ -18,7 +18,7 @@ This deployment includes:
 - A **VM Scale Set (VMSS)** deployed into a private subnet
 - **NSG attached at subnet level**
 - **Azure Bastion** for secure SSH access
-- **NAT Gateway** for outbound internet access
+- **NAT Gateway** (via `terraform-az-fk-natgw`) for outbound internet access
 - **cloud-init**–based provisioning (NGINX)
 
 Traffic flow:

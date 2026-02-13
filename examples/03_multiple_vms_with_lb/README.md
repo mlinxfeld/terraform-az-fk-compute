@@ -35,7 +35,7 @@ The architecture consists of:
 - Multiple **Linux Virtual Machines** deployed in the private subnet
 - A **Network Security Group** attached at the subnet level
 - An **Azure Bastion Host** for secure SSH access
-- A **NAT Gateway** providing controlled outbound internet access
+- A **NAT Gateway** (via `terraform-az-fk-natgw`) providing controlled outbound internet access
 
 ---
 
