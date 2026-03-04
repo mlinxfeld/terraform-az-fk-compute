@@ -20,5 +20,4 @@ module "compute" {
 
   tags = var.tags
 
-#  depends_on = [azurerm_subnet_network_security_group_association.public_subnet_assoc]
 }
