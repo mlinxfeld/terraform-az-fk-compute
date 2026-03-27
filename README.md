@@ -2,7 +2,7 @@
 
 This repository contains a reusable **Terraform / OpenTofu module** and progressive examples for deploying **Azure Compute resources** — starting from a single Virtual Machine and evolving toward scalable, load-balanced architectures.
 
-It is part of the **[FoggyKitchen.com training ecosystem](https://foggykitchen.com/courses-2/)** and is designed as a **clean, composable compute layer** that builds on top of an existing Azure networking foundation (VNet, subnets).
+It is part of the **[FoggyKitchen.com training ecosystem](https://foggykitchen.com/courses/azure-fundamentals-terraform-course/)** and is designed as a **clean, composable compute layer** that builds on top of an existing Azure networking foundation (VNet, subnets).
 
 ---
 
