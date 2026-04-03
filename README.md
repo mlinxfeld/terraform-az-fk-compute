@@ -31,6 +31,8 @@ Depending on configuration and example used, the module can create:
 - Virtual Machine Scale Sets (VMSS)
 - Network Interfaces (NICs)
 - OS Disks and basic VM configuration
+- Optional static private IP assignment
+- Optional NIC IP forwarding for router / NVA scenarios
 - Optional integration with:
   - Azure Load Balancer backend pools
   - Autoscaling (VMSS)
@@ -90,6 +92,39 @@ module "compute" {
   }
 }
 ```
+
+## Router / NVA Usage
+
+The module can also be used to deploy a simple **router VM** or lightweight **network virtual appliance** in a subnet:
+
+```hcl
+module "router_vm" {
+  source = "git::https://github.com/mlinxfeld/terraform-az-fk-compute.git"
+
+  name                = "fk-router-vm"
+  location            = "westeurope"
+  resource_group_name = "fk-rg"
+  subnet_id           = module.vnet.subnet_ids["hub"]
+
+  enable_ip_forwarding         = true
+  private_ip_address_allocation = "Static"
+  private_ip_address            = "10.0.1.4"
+
+  admin_username = "azureuser"
+  ssh_public_key = file("~/.ssh/id_rsa.pub")
+
+  custom_data = base64encode(<<EOF
+#cloud-config
+runcmd:
+  - sysctl -w net.ipv4.ip_forward=1
+  - sed -i '/^net.ipv4.ip_forward/d' /etc/sysctl.conf
+  - echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+EOF
+  )
+}
+```
+
+For a working transit-routing design in Azure, OS-level forwarding must be enabled inside the VM in addition to NIC IP forwarding.
 
 ---
 

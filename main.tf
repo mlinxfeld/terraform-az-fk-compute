@@ -7,18 +7,30 @@ locals {
 # =========================
 
 resource "azurerm_network_interface" "vm_nic" {
-  count               = var.deployment_mode == "vm" ? 1 : 0
-  name                = "${var.name}-nic"
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  count                 = var.deployment_mode == "vm" ? 1 : 0
+  name                  = "${var.name}-nic"
+  location              = var.location
+  resource_group_name   = var.resource_group_name
+  ip_forwarding_enabled = var.enable_ip_forwarding
 
   ip_configuration {
     name                          = local.nic_ipconfig_name
     subnet_id                     = var.subnet_id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = var.private_ip_address_allocation
+    private_ip_address            = var.private_ip_address_allocation == "Static" ? var.private_ip_address : null
   }
 
   tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition = (
+        var.private_ip_address_allocation == "Dynamic" ||
+        (var.private_ip_address != null && trimspace(var.private_ip_address) != "")
+      )
+      error_message = "private_ip_address must be set when private_ip_address_allocation is 'Static'."
+    }
+  }
 }
 
 resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
@@ -100,12 +112,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 
   network_interface {
-    name    = "${var.name}-nic"
-    primary = true
+    name                 = "${var.name}-nic"
+    primary              = true
+    enable_ip_forwarding = var.enable_ip_forwarding
 
     ip_configuration {
       name      = local.nic_ipconfig_name
-      primary  = true
+      primary   = true
       subnet_id = var.subnet_id
 
       load_balancer_backend_address_pool_ids = (
@@ -117,6 +130,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   custom_data = (var.custom_data != null && trimspace(var.custom_data) != "") ? var.custom_data : null
 
   tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition     = var.private_ip_address_allocation == "Dynamic"
+      error_message = "private_ip_address_allocation must remain 'Dynamic' when deployment_mode is 'vmss'."
+    }
+  }
 }
 
 # =========================
@@ -182,4 +202,3 @@ resource "azurerm_monitor_autoscale_setting" "vmss_autoscale" {
 
   tags = var.tags
 }
-

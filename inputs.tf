@@ -29,6 +29,29 @@ variable "subnet_id" {
   type        = string
 }
 
+variable "enable_ip_forwarding" {
+  description = "Enable IP forwarding on the VM/VMSS NIC. Required for router or NVA-style workloads."
+  type        = bool
+  default     = false
+}
+
+variable "private_ip_address_allocation" {
+  description = "Private IP allocation mode for the primary NIC on a single VM deployment."
+  type        = string
+  default     = "Dynamic"
+
+  validation {
+    condition     = contains(["Dynamic", "Static"], var.private_ip_address_allocation)
+    error_message = "private_ip_address_allocation must be either 'Dynamic' or 'Static'."
+  }
+}
+
+variable "private_ip_address" {
+  description = "Static private IP address for the primary NIC on a single VM deployment. Used only when private_ip_address_allocation is set to Static."
+  type        = string
+  default     = null
+}
+
 variable "admin_username" {
   description = "Admin username for Linux VM/VMSS"
   type        = string
