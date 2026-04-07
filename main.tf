@@ -1,6 +1,6 @@
 locals {
   nic_ipconfig_name = "ipconfig1"
-  use_multi_nic     = var.deployment_mode == "vm" && var.network_interfaces != null && length(var.network_interfaces) > 0
+  use_multi_nic     = var.deployment_mode == "vm" && try(length(var.network_interfaces), 0) > 0
 
   primary_multi_nic_keys = local.use_multi_nic ? [
     for nic_key, nic in var.network_interfaces : nic_key if try(nic.primary, false)
