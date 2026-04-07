@@ -33,6 +33,7 @@ Depending on configuration and example used, the module can create:
 - OS Disks and basic VM configuration
 - Optional static private IP assignment
 - Optional NIC IP forwarding for router / NVA scenarios
+- Optional multi-NIC Virtual Machines
 - Optional integration with:
   - Azure Load Balancer backend pools
   - Autoscaling (VMSS)
@@ -128,13 +129,69 @@ For a working transit-routing design in Azure, OS-level forwarding must be enabl
 
 ---
 
+## Multi-NIC VM Usage
+
+The module now supports an optional multi-NIC mode for `deployment_mode = "vm"` while preserving the existing single-NIC inputs.
+
+When `network_interfaces` is set:
+
+- the module creates one NIC per map entry
+- exactly one NIC must be marked with `primary = true`
+- `vm_private_ip` returns the private IP of the primary NIC
+- `vm_private_ips` and `vm_nic_ids` return all NICs as maps
+
+Example:
+
+```hcl
+module "router_vm" {
+  source = "git::https://github.com/mlinxfeld/terraform-az-fk-compute.git"
+
+  name                = "fk-router-vm"
+  location            = "westeurope"
+  resource_group_name = "fk-rg"
+  deployment_mode     = "vm"
+
+  network_interfaces = {
+    inside = {
+      subnet_id                     = module.vnet.subnet_ids["hub-inside"]
+      private_ip_address_allocation = "Static"
+      private_ip_address            = "10.0.1.4"
+      enable_ip_forwarding          = true
+      primary                       = true
+      attach_nsg_to_nic             = true
+      nsg_id                        = module.nsg_inside.id
+    }
+    outside = {
+      subnet_id                     = module.vnet.subnet_ids["hub-outside"]
+      private_ip_address_allocation = "Static"
+      private_ip_address            = "10.0.2.4"
+      attach_nsg_to_nic             = true
+      nsg_id                        = module.nsg_outside.id
+    }
+  }
+
+  admin_username = "azureuser"
+  ssh_public_key = file("~/.ssh/id_rsa.pub")
+}
+```
+
+Current limitations of multi-NIC mode:
+
+- supported only for `deployment_mode = "vm"`
+- `lb_attachment` remains supported only in the single-NIC VM path
+- VMSS networking is still single-NIC
+
+---
+
 ## 📤 Outputs
 
 | Output | Description |
 |------|-------------|
 | `deployment_mode` | Selected deployment mode (`vm` or `vmss`) |
 | `vm_id` | VM resource ID |
-| `vm_private_ip` | Private IP address of the VM |
+| `vm_private_ip` | Private IP address of the VM primary NIC |
+| `vm_private_ips` | Private IP addresses of all VM NICs |
+| `vm_nic_ids` | NIC IDs of the VM |
 | `backend_nic_ids` | NIC IDs usable as LB backend targets |
 | `vmss_id` | VM Scale Set ID (if used) |
 | `autoscale_setting_id` | Autoscale setting ID (if enabled) |
@@ -147,6 +204,7 @@ For a working transit-routing design in Azure, OS-level forwarding must be enabl
 - Compute is **stateless infrastructure**, not configuration management
 - Networking decisions happen **before** compute
 - Load balancing and security are **explicit integrations**
+- Backward compatibility matters, so advanced networking features extend the existing API instead of replacing it
 - Outputs are first-class citizens
 
 ---

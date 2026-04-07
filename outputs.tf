@@ -10,12 +10,44 @@ output "vm_id" {
 }
 
 output "vm_private_ip" {
-  value       = try(azurerm_network_interface.vm_nic[0].private_ip_address, null)
-  description = "Private IP address of the VM"
+  value = (
+    var.deployment_mode != "vm" ? null :
+    local.use_multi_nic ? try(azurerm_network_interface.vm_multi_nic[local.primary_multi_nic_key].private_ip_address, null) :
+    try(azurerm_network_interface.vm_nic[0].private_ip_address, null)
+  )
+  description = "Private IP address of the VM primary NIC"
+}
+
+output "vm_private_ips" {
+  value = (
+    var.deployment_mode != "vm" ? {} :
+    local.use_multi_nic ? {
+      for nic_key, nic in azurerm_network_interface.vm_multi_nic : nic_key => nic.private_ip_address
+      } : {
+      primary = try(azurerm_network_interface.vm_nic[0].private_ip_address, null)
+    }
+  )
+  description = "Private IP addresses of the VM NICs"
+}
+
+output "vm_nic_ids" {
+  value = (
+    var.deployment_mode != "vm" ? {} :
+    local.use_multi_nic ? {
+      for nic_key, nic in azurerm_network_interface.vm_multi_nic : nic_key => nic.id
+      } : {
+      primary = try(azurerm_network_interface.vm_nic[0].id, null)
+    }
+  )
+  description = "NIC IDs of the VM"
 }
 
 output "backend_nic_ids" {
-  value       = var.deployment_mode == "vm" ? [azurerm_network_interface.vm_nic[0].id] : []
+  value = (
+    var.deployment_mode != "vm" ? [] :
+    local.use_multi_nic ? [for nic_key in local.ordered_multi_nic_keys : azurerm_network_interface.vm_multi_nic[nic_key].id] :
+    [azurerm_network_interface.vm_nic[0].id]
+  )
   description = "NIC IDs usable as LB backend targets"
 }
 
@@ -37,4 +69,3 @@ output "attached_backend_pool_ids" {
   )
   description = "Backend pool IDs this compute instance is attached to"
 }
-

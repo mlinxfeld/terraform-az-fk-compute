@@ -27,6 +27,7 @@ variable "deployment_mode" {
 variable "subnet_id" {
   description = "Subnet ID where compute resources will be deployed"
   type        = string
+  default     = null
 }
 
 variable "enable_ip_forwarding" {
@@ -50,6 +51,20 @@ variable "private_ip_address" {
   description = "Static private IP address for the primary NIC on a single VM deployment. Used only when private_ip_address_allocation is set to Static."
   type        = string
   default     = null
+}
+
+variable "network_interfaces" {
+  description = "Optional multi-NIC definition for VM deployments. When null, the module uses the existing single-NIC inputs."
+  type = map(object({
+    subnet_id                     = string
+    private_ip_address_allocation = optional(string, "Dynamic")
+    private_ip_address            = optional(string)
+    enable_ip_forwarding          = optional(bool, false)
+    attach_nsg_to_nic             = optional(bool, false)
+    nsg_id                        = optional(string)
+    primary                       = optional(bool, false)
+  }))
+  default = null
 }
 
 variable "admin_username" {

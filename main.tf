@@ -1,5 +1,19 @@
 locals {
   nic_ipconfig_name = "ipconfig1"
+  use_multi_nic     = var.deployment_mode == "vm" && var.network_interfaces != null && length(var.network_interfaces) > 0
+
+  primary_multi_nic_keys = local.use_multi_nic ? [
+    for nic_key, nic in var.network_interfaces : nic_key if try(nic.primary, false)
+  ] : []
+
+  ordered_multi_nic_keys = local.use_multi_nic ? concat(
+    local.primary_multi_nic_keys,
+    sort([
+      for nic_key, nic in var.network_interfaces : nic_key if !try(nic.primary, false)
+    ])
+  ) : []
+
+  primary_multi_nic_key = local.use_multi_nic ? local.primary_multi_nic_keys[0] : null
 }
 
 # =========================
@@ -7,7 +21,7 @@ locals {
 # =========================
 
 resource "azurerm_network_interface" "vm_nic" {
-  count                 = var.deployment_mode == "vm" ? 1 : 0
+  count                 = var.deployment_mode == "vm" && !local.use_multi_nic ? 1 : 0
   name                  = "${var.name}-nic"
   location              = var.location
   resource_group_name   = var.resource_group_name
@@ -33,10 +47,59 @@ resource "azurerm_network_interface" "vm_nic" {
   }
 }
 
+resource "azurerm_network_interface" "vm_multi_nic" {
+  for_each              = local.use_multi_nic ? var.network_interfaces : {}
+  name                  = "${var.name}-${each.key}-nic"
+  location              = var.location
+  resource_group_name   = var.resource_group_name
+  ip_forwarding_enabled = try(each.value.enable_ip_forwarding, false)
+
+  ip_configuration {
+    name                          = local.nic_ipconfig_name
+    subnet_id                     = each.value.subnet_id
+    private_ip_address_allocation = try(each.value.private_ip_address_allocation, "Dynamic")
+    private_ip_address            = try(each.value.private_ip_address_allocation, "Dynamic") == "Static" ? try(each.value.private_ip_address, null) : null
+  }
+
+  tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition = (
+        try(each.value.private_ip_address_allocation, "Dynamic") == "Dynamic" ||
+        try(trimspace(each.value.private_ip_address), "") != ""
+      )
+      error_message = "private_ip_address must be set for every multi-NIC entry using Static allocation."
+    }
+
+    precondition {
+      condition     = contains(["Dynamic", "Static"], try(each.value.private_ip_address_allocation, "Dynamic"))
+      error_message = "private_ip_address_allocation must be either 'Dynamic' or 'Static' for every multi-NIC entry."
+    }
+  }
+}
+
 resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
-  count                     = (var.deployment_mode == "vm") && (var.attach_nsg_to_nic) ? 1 : 0
+  count                     = (var.deployment_mode == "vm") && !local.use_multi_nic && (var.attach_nsg_to_nic) ? 1 : 0
   network_interface_id      = azurerm_network_interface.vm_nic[count.index].id
   network_security_group_id = var.nsg_id
+}
+
+resource "azurerm_network_interface_security_group_association" "vm_multi_nic_nsg" {
+  for_each = local.use_multi_nic ? {
+    for nic_key, nic in var.network_interfaces : nic_key => nic
+    if try(nic.attach_nsg_to_nic, false)
+  } : {}
+
+  network_interface_id      = azurerm_network_interface.vm_multi_nic[each.key].id
+  network_security_group_id = each.value.nsg_id
+
+  lifecycle {
+    precondition {
+      condition     = try(trimspace(each.value.nsg_id), "") != ""
+      error_message = "nsg_id must be set for every multi-NIC entry where attach_nsg_to_nic is true."
+    }
+  }
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
@@ -47,7 +110,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                = var.vm_size
   admin_username      = var.admin_username
 
-  network_interface_ids = [
+  network_interface_ids = local.use_multi_nic ? [
+    for nic_key in local.ordered_multi_nic_keys : azurerm_network_interface.vm_multi_nic[nic_key].id
+    ] : [
     azurerm_network_interface.vm_nic[0].id
   ]
 
@@ -71,10 +136,27 @@ resource "azurerm_linux_virtual_machine" "vm" {
   custom_data = var.custom_data
 
   tags = var.tags
+
+  lifecycle {
+    precondition {
+      condition     = local.use_multi_nic || try(trimspace(var.subnet_id), "") != ""
+      error_message = "subnet_id must be set when using the single-NIC VM deployment path."
+    }
+
+    precondition {
+      condition     = !local.use_multi_nic || length(local.primary_multi_nic_keys) == 1
+      error_message = "Exactly one multi-NIC entry must be marked as primary = true."
+    }
+
+    precondition {
+      condition     = !local.use_multi_nic || var.lb_attachment == null
+      error_message = "lb_attachment is currently supported only in the single-NIC VM deployment path."
+    }
+  }
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "vm_lb_attach" {
-  count = var.deployment_mode == "vm" && var.lb_attachment != null ? 1 : 0
+  count = var.deployment_mode == "vm" && !local.use_multi_nic && var.lb_attachment != null ? 1 : 0
 
   network_interface_id    = azurerm_network_interface.vm_nic[0].id
   ip_configuration_name   = local.nic_ipconfig_name
@@ -135,6 +217,16 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     precondition {
       condition     = var.private_ip_address_allocation == "Dynamic"
       error_message = "private_ip_address_allocation must remain 'Dynamic' when deployment_mode is 'vmss'."
+    }
+
+    precondition {
+      condition     = var.network_interfaces == null || length(var.network_interfaces) == 0
+      error_message = "network_interfaces is currently supported only for deployment_mode = 'vm'."
+    }
+
+    precondition {
+      condition     = try(trimspace(var.subnet_id), "") != ""
+      error_message = "subnet_id must be set when deployment_mode is 'vmss'."
     }
   }
 }
