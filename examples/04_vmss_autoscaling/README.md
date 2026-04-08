@@ -177,4 +177,9 @@ tofu destroy
 
 ---
 
-© 2025 FoggyKitchen.com — *Cloud. Code. Clarity.*
+## 🪪 License
+
+Licensed under the **Universal Permissive License (UPL), Version 1.0**.  
+See [LICENSE](../../LICENSE) for details.
+
+© 2026 FoggyKitchen.com — *Cloud. Code. Clarity.*

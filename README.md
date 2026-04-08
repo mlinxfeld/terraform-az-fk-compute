@@ -59,6 +59,7 @@ terraform-az-fk-compute/
 │   ├── 02_single_vm_with_nsg/        
 │   ├── 03_multiple_vms_with_lb/      
 │   ├── 04_vmss_autoscaling/         
+│   ├── 05_nva_dual_nic_vm/
 │   └── README.md
 ├── main.tf
 ├── inputs.tf
@@ -180,6 +181,8 @@ Current limitations of multi-NIC mode:
 - supported only for `deployment_mode = "vm"`
 - `lb_attachment` remains supported only in the single-NIC VM path
 - VMSS networking is still single-NIC
+
+See [examples/05_nva_dual_nic_vm](examples/05_nva_dual_nic_vm/README.md) for a minimal dual-NIC NVA-style VM example focused on the compute module itself.
 
 ---
 

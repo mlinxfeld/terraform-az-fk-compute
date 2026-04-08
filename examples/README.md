@@ -16,6 +16,7 @@ and multicloud courses (Azure Fundamentals, AKS, and advanced networking scenari
 | 02 | **Single VM with NSG** | Network Security Groups and inbound/outbound control |
 | 03 | **Multiple VMs with Load Balancer** | Azure Load Balancer, backend pools, health probes |
 | 04 | **VM Scale Set with Autoscaling** | VMSS, autoscale rules, backend integration |
+| 05 | **Dual-NIC NVA VM** | Multi-NIC VM, primary/secondary NICs, static IPs, NIC-level NSGs |
 
 Each example builds on the **concepts** introduced in the previous one, but can be applied
 independently for learning and experimentation.
@@ -39,7 +40,7 @@ tofu apply
 ```
 
 You can apply examples independently, but the **recommended approach is sequential**:
-01 → 02 → 03 → 04
+01 → 02 → 03 → 04 → 05
 
 This mirrors real-world compute design, where complexity is introduced only when required.
 
@@ -51,6 +52,7 @@ This mirrors real-world compute design, where complexity is introduced only when
 - No unused or placeholder resources
 - Clear separation of concerns (networking vs compute)
 - Compute designed to integrate with other modules (VNet, LB, NSG)
+- Advanced networking stays compute-centric unless the example explicitly targets a routing module
 
 These examples intentionally avoid:
 - Full landing zones
