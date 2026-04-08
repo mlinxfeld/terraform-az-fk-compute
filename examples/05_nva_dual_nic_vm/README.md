@@ -17,6 +17,8 @@ For a larger hub/spoke routing scenario built on top of this capability, see the
 
 ## Architecture Overview
 
+<img src="05_nva_dual_nic_vm_architecture.png" width="900"/>
+
 This deployment creates:
 
 - one Resource Group
