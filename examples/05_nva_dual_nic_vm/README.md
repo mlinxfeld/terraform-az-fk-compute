@@ -186,3 +186,12 @@ Those belong to larger, integration-oriented networking examples rather than the
 ```bash
 tofu destroy
 ```
+
+---
+
+## 🪪 License
+
+Licensed under the **Universal Permissive License (UPL), Version 1.0**.  
+See [LICENSE](../../LICENSE) for details.
+
+© 2026 FoggyKitchen.com — *Cloud. Code. Clarity.*
