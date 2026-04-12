@@ -17,6 +17,7 @@ and multicloud courses (Azure Fundamentals, AKS, and advanced networking scenari
 | 03 | **Multiple VMs with Load Balancer** | Azure Load Balancer, backend pools, health probes |
 | 04 | **VM Scale Set with Autoscaling** | VMSS, autoscale rules, backend integration |
 | 05 | **Dual-NIC NVA VM** | Multi-NIC VM, primary/secondary NICs, static IPs, NIC-level NSGs |
+| 06 | **VM Managed Identity To Blob** | System-assigned managed identity, Blob upload via `az login --identity`, compute-to-storage integration |
 
 Each example builds on the **concepts** introduced in the previous one, but can be applied
 independently for learning and experimentation.
@@ -40,7 +41,7 @@ tofu apply
 ```
 
 You can apply examples independently, but the **recommended approach is sequential**:
-01 → 02 → 03 → 04 → 05
+01 → 02 → 03 → 04 → 05 → 06
 
 This mirrors real-world compute design, where complexity is introduced only when required.
 

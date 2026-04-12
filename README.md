@@ -61,6 +61,7 @@ terraform-az-fk-compute/
 │   ├── 03_multiple_vms_with_lb/      
 │   ├── 04_vmss_autoscaling/         
 │   ├── 05_nva_dual_nic_vm/
+│   ├── 06_vm_managed_identity_blob_access/
 │   └── README.md
 ├── main.tf
 ├── inputs.tf

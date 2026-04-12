@@ -1,0 +1,12 @@
+location            = "westeurope"
+resource_group_name = "fk-rg"
+vnet_name           = "fk-vnet"
+vm_name             = "fk-storage-client-vm"
+storage_name_prefix = "fksa"
+
+tags = {
+  project = "foggykitchen"
+  module  = "terraform-az-fk-compute"
+  example = "06_vm_managed_identity_blob_access"
+  env     = "dev"
+}
