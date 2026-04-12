@@ -9,6 +9,16 @@ output "vm_id" {
   description = "VM resource ID"
 }
 
+output "vm_principal_id" {
+  value       = try(azurerm_linux_virtual_machine.vm[0].identity[0].principal_id, null)
+  description = "Principal ID of the VM managed identity"
+}
+
+output "vm_tenant_id" {
+  value       = try(azurerm_linux_virtual_machine.vm[0].identity[0].tenant_id, null)
+  description = "Tenant ID of the VM managed identity"
+}
+
 output "vm_private_ip" {
   value = (
     var.deployment_mode != "vm" ? null :
@@ -56,6 +66,16 @@ output "backend_nic_ids" {
 output "vmss_id" {
   value       = try(azurerm_linux_virtual_machine_scale_set.vmss[0].id, null)
   description = "VM Scale Set ID"
+}
+
+output "vmss_principal_id" {
+  value       = try(azurerm_linux_virtual_machine_scale_set.vmss[0].identity[0].principal_id, null)
+  description = "Principal ID of the VMSS managed identity"
+}
+
+output "vmss_tenant_id" {
+  value       = try(azurerm_linux_virtual_machine_scale_set.vmss[0].identity[0].tenant_id, null)
+  description = "Tenant ID of the VMSS managed identity"
 }
 
 output "autoscale_setting_id" {

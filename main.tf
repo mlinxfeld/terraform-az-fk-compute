@@ -135,6 +135,14 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   custom_data = var.custom_data
 
+  dynamic "identity" {
+    for_each = var.identity_type == "SystemAssigned" ? [1] : []
+
+    content {
+      type = "SystemAssigned"
+    }
+  }
+
   tags = var.tags
 
   lifecycle {
@@ -210,6 +218,14 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 
   custom_data = (var.custom_data != null && trimspace(var.custom_data) != "") ? var.custom_data : null
+
+  dynamic "identity" {
+    for_each = var.identity_type == "SystemAssigned" ? [1] : []
+
+    content {
+      type = "SystemAssigned"
+    }
+  }
 
   tags = var.tags
 

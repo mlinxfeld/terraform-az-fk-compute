@@ -31,6 +31,7 @@ Depending on configuration and example used, the module can create:
 - Virtual Machine Scale Sets (VMSS)
 - Network Interfaces (NICs)
 - OS Disks and basic VM configuration
+- Optional system-assigned managed identity
 - Optional static private IP assignment
 - Optional NIC IP forwarding for router / NVA scenarios
 - Optional multi-NIC Virtual Machines
@@ -84,6 +85,7 @@ module "compute" {
   subnet_id = module.vnet.subnet_ids["public"]
 
   vm_size = "Standard_B1s"
+  identity_type = "SystemAssigned"
 
   admin_username = "azureuser"
   ssh_public_key = file("~/.ssh/id_rsa.pub")
@@ -94,6 +96,8 @@ module "compute" {
   }
 }
 ```
+
+When `identity_type = "SystemAssigned"`, the module enables a system-assigned managed identity on the VM or VMSS and exposes its principal ID in outputs such as `vm_principal_id` or `vmss_principal_id`. This is useful when integrating the compute layer with downstream RBAC assignments.
 
 ## Router / NVA Usage
 
@@ -192,11 +196,15 @@ See [examples/05_nva_dual_nic_vm](examples/05_nva_dual_nic_vm/README.md) for a m
 |------|-------------|
 | `deployment_mode` | Selected deployment mode (`vm` or `vmss`) |
 | `vm_id` | VM resource ID |
+| `vm_principal_id` | Principal ID of the VM managed identity |
+| `vm_tenant_id` | Tenant ID of the VM managed identity |
 | `vm_private_ip` | Private IP address of the VM primary NIC |
 | `vm_private_ips` | Private IP addresses of all VM NICs |
 | `vm_nic_ids` | NIC IDs of the VM |
 | `backend_nic_ids` | NIC IDs usable as LB backend targets |
 | `vmss_id` | VM Scale Set ID (if used) |
+| `vmss_principal_id` | Principal ID of the VMSS managed identity |
+| `vmss_tenant_id` | Tenant ID of the VMSS managed identity |
 | `autoscale_setting_id` | Autoscale setting ID (if enabled) |
 | `attached_backend_pool_ids` | Backend pool IDs this compute instance is attached to |
 

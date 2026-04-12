@@ -172,3 +172,14 @@ variable "custom_data" {
   type        = string
   default     = null
 }
+
+variable "identity_type" {
+  description = "Managed identity type for compute resources. Use None to disable or SystemAssigned to enable a system-assigned managed identity."
+  type        = string
+  default     = "None"
+
+  validation {
+    condition     = contains(["None", "SystemAssigned"], var.identity_type)
+    error_message = "identity_type must be either 'None' or 'SystemAssigned'."
+  }
+}
