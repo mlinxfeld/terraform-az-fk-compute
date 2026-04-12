@@ -40,7 +40,7 @@ resource "azurerm_network_interface" "vm_nic" {
     precondition {
       condition = (
         var.private_ip_address_allocation == "Dynamic" ||
-        (var.private_ip_address != null && trimspace(var.private_ip_address) != "")
+        try(trimspace(var.private_ip_address), "") != ""
       )
       error_message = "private_ip_address must be set when private_ip_address_allocation is 'Static'."
     }
